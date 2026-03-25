@@ -8,7 +8,6 @@ app.get("/", (req, res) => {
   res.send("Servidor no ar");
 });
 
-// Rota para listar detalhes do produto na Printify (inclui variants)
 app.get("/printify-product", async (req, res) => {
   try {
     const PRINTIFY_API_KEY = process.env.PRINTIFY_API_KEY;
@@ -16,7 +15,7 @@ app.get("/printify-product", async (req, res) => {
     const PRODUCT_ID = process.env.PRINTIFY_PRODUCT_ID || "105";
 
     if (!PRINTIFY_API_KEY) {
-      return res.status(500).send("PRINTIFY_API_KEY não configurada");
+      return res.status(500).send("PRINTIFY_API_KEY nao configurada");
     }
 
     const response = await fetch(
@@ -35,10 +34,9 @@ app.get("/printify-product", async (req, res) => {
     if (!response.ok) {
       return res
         .status(response.status)
-        .send(`Erro da Printify: ${JSON.stringify(data)}`);
+        .send("Erro da Printify: " + JSON.stringify(data));
     }
 
-    // devolve o JSON completo para você ver no navegador / ReqBin
     res.status(200).json(data);
   } catch (err) {
     console.error("Erro ao buscar produto na Printify:", err);
@@ -46,7 +44,6 @@ app.get("/printify-product", async (req, res) => {
   }
 });
 
-// Mantém o webhook simples por enquanto
 app.post("/webhook", (req, res) => {
   console.log("Recebi algo em /webhook");
   console.log("Body recebido:", JSON.stringify(req.body, null, 2));
