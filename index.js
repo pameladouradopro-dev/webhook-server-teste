@@ -30,18 +30,22 @@ app.get("/printify-product", async (req, res) => {
       }
     });
 
-    let data = null;
+    const text = await response.text(); // pega a resposta como texto bruto
+    console.log("Status da Printify:", response.status);
+    console.log("Texto cru da Printify:", text);
+
+    let data;
     try {
-      data = await response.json();
+      data = text ? JSON.parse(text) : null;
     } catch (e) {
-      console.error("Não foi possível converter resposta da Printify em JSON");
+      console.error("Falha ao fazer JSON.parse no retorno da Printify:", e);
+      data = { raw: text };
     }
 
-    console.log("Status da Printify:", response.status);
-    console.log("Produto Printify:", JSON.stringify(data, null, 2));
+    console.log("Objeto parseado da Printify:", JSON.stringify(data, null, 2));
 
     if (!response.ok) {
-      console.error("Resposta de erro da Printify:", data);
+      console.error("Resposta de erro da Printify (final):", data);
       return res
         .status(response.status)
         .send("Erro da Printify: " + JSON.stringify(data));
